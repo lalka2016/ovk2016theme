@@ -1,0 +1,10 @@
+{extends "../@layout.xml"}
+{block title}Часто задаваемые вопросы{/block}
+
+{block header}
+    Часто задаваемые вопросы
+{/block}
+
+{block content}
+    Я попозже допишу ок ~~ veselcraft - 12.01.2022 - 22:05 GMT+3
+{/block}

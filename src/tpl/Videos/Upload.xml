@@ -1,0 +1,65 @@
+{extends "../@layout.xml"}
+{block title}{_upload_video}{/block}
+
+{block header}
+    <a href="{$thisUser->getURL()}">{$thisUser->getCanonicalName()}</a>
+    »
+    <a href="/videos{$thisUser->getId()}">{_videos}</a>
+    » 
+    {_upload_video}
+{/block}
+
+{block content}
+{* нахуй такое форматирование делать *}
+<div class="container_gray">
+    <form method="post" enctype="multipart/form-data">
+      <table cellspacing="7" cellpadding="0" width="50%" border="0" align="center">
+        <tbody>
+          <tr>
+            <td width="100%">
+              <span class="subH4">{_info_name}</span>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="text" name="name" id="naming"/></td>
+          </tr>
+          <tr>
+            <td width="100%">
+              <span class="subH4">{_description}</span><span> ({_not_necessary})</span>
+            </td>
+          </tr>
+          <tr>
+            <td><textarea name="desc" style="resize: vertical;"></textarea></td>
+          </tr>
+          <tr>
+            <td width="100%">
+              <span class="subH4">{_video}</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label class="button" style="">{_browse}
+                <input type="file" id="blob" name="blob" style="display: none;" onchange="filename.innerHTML=blob.files[0].name; naming.value = blob.files[0].name" accept="video/*" />
+              </label>
+              <div id="filename" style="margin-top: 10px;"></div>
+            </td>
+          </tr>
+          <tr>
+            <td width="100%">
+              <span class="subH4">{_video_link_to_yt}</span>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="text" name="link" placeholder="https://www.youtube.com/watch?v=9FWSRQEqhKE" /></td>
+          </tr>
+          <tr>
+            <td>
+                <input type="hidden" name="hash" value="{$csrfToken}" />
+                <input type="submit" class="button" name="submit" value="{_upload_button}" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+</div>
+{/block}

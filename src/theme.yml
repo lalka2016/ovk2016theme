@@ -1,0 +1,14 @@
+id: vk2016
+version: "0.0.1.0"
+openvk_version: 0
+enabled: 1
+override_templates: true
+inherits_master: false
+metadata:
+    name:
+        _: "VK2016"
+        en: "VK2016"
+        ru: "ВК 2016"
+        ua: "ВК 2016"
+    author: "idk"
+    description: "VK 2016 Redesign"

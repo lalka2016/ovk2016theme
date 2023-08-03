@@ -1,0 +1,9 @@
+{var $microblogEnabled = isset($thisUser) ? $thisUser->hasMicroblogEnabled() : false}
+
+{if true}
+{include "post/microblogpost.xml", post => $post, commentSection => $commentSection}
+{else}
+    <div class="post post-divider">
+        <span style="color:gray;">{_no_access_post}</span>
+    </div>
+{/if}

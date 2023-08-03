@@ -1,0 +1,163 @@
+{extends "../@layout.xml"}
+{var $iterator = $videos}
+{var $count    = $paginatorConf->count}
+{var $page     = $paginatorConf->page}
+
+{block title}{_videos} {$user->getCanonicalName()}{/block}
+
+{block header}
+    <a href="{$user->getURL()}">{$user->getCanonicalName()}</a>
+    » {_videos}
+{/block}
+
+{block size}
+    <div style="padding-bottom: 0px; padding-top: 0;" class="summaryBar">
+        <div class="summary">
+            {tr("videos", $count)}
+        </div>
+    </div>
+{/block}
+
+{block actions}
+    
+{/block}
+
+{* BEGIN ELEMENTS DESCRIPTION *}
+
+{block link|strip|stripHtml}
+    /video{$x->getPrettyId()}
+{/block}
+
+{block preview}
+    <div class="video-preview" id="videoOpen" data-id="{$x->getId()}">
+        <img src="{$x->getThumbnailURL()}"
+            alt="{$x->getName()}"
+            style="max-width: 170px; max-height: 127px; margin: auto;" />
+    </div>
+{/block}
+
+{block name}
+    <span id="videoOpen" data-id="{$x->getId()}" style="color:unset;">{$x->getName()}</span>
+{/block}
+
+{block description}
+    <p>
+        <span>{$x->getDescription() ?? ""}</span>
+    </p>
+    <span style="color: grey;">{_video_uploaded} {$x->getPublicationTime()}</span><br/>
+    <span style="color: grey;">{_video_updated} {$x->getEditTime() ?? $x->getPublicationTime()}</span>
+    <p>
+        <a href="/video{$x->getPrettyId()}" id="videoOpen" data-id="{$x->getId()}">{_view_video}</a>
+        {if $x->getCommentsCount() > 0}| <a href="/video{$x->getPrettyId()}#comments">{_comments} ({$x->getCommentsCount()})</a>{/if}
+    </p>
+{/block}
+
+{block wrap}
+    <div class="wrap2">
+        <div class="wrap1">
+            <div class="page_wrap padding_top">
+                <div n:ifset="tabs" n:ifcontent class="tabs stupid-fix">
+                    {include tabs}
+                </div>
+
+                {ifset size}
+                    {include size, x => $dat}
+                {/ifset}
+
+                {ifset specpage}
+                    {include specpage, x => $dat}
+                {else}
+                    <div class="videoContainer">
+                        <div class="container_gray trimmed">
+                            {var $data = is_array($iterator) ? $iterator : iterator_to_array($iterator)}
+
+                            {if sizeof($data) > 0}
+                                <div class="content" n:foreach="$data as $dat">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td valign="top">
+                                                    <a href="{include link, x => $dat}">
+                                                        {include preview, x => $dat}
+                                                    </a>
+                                                </td>
+                                                <td valign="top" style="width: 100%">
+                                                    {ifset infotable}
+                                                        {include infotable, x => $dat}
+                                                    {else}
+                                                    <a href="{include link, x => $dat}">
+                                                        <b>
+                                                            {include name, x => $dat}
+                                                        </b>
+                                                    </a>
+                                                    <br/>
+                                                        {include description, x => $dat}
+                                                    {/ifset}
+                                                </td>
+                                                <td n:ifset="actions" valign="top" class="action_links" style="width: 150px;">
+                                                    {include actions, x => $dat}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                    {include "../components/paginator.xml", conf => (object) [
+                                        "page"     => $page,
+                                        "count"    => $count,
+                                        "amount"   => sizeof($data),
+                                        "perPage"  => $perPage ?? OPENVK_DEFAULT_PER_PAGE,
+                                        "atBottom" => true,
+                                    ]}
+                            {else}
+                                {ifset customErrorMessage}
+                                    {include customErrorMessage}
+                                {else}
+                                    {include "../components/nothing.xml"}
+                                {/ifset}
+                            {/if}
+                    </div>
+                {/ifset}
+                {include rightPanel}
+            </div>
+                {ifset bottom}
+                    {include bottom}
+                {/ifset}
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block rightPanel}
+    <div class="rightPanel">
+        <form action="/search" style="padding-bottom: 6px;">
+            <input class="videoSearch" type="text" name="query" placeholder="{_header_search}">
+            <input type="hidden" name="type" value="videos">
+        </form>
+        <div class="uploadVideofile">
+            <span n:if="isset($thisUser) && $thisUser->getId() == $user->getId() && !OPENVK_ROOT_CONF['openvk']['preferences']['videos']['disableUploading']">
+                <a href="/videos/upload">{_upload_videofile}</a>
+            </span>
+        </div>
+        <div class="videoAlbums">
+            <ul class="searchList" id="srchlist">
+                <li {if is_null($_GET["album"])}class="used"{/if} id="all_videos">
+                    <a href="/videos{$user->getId()}" id="playlistSwitch">{_all_videos}</a>
+                </li>
+                {foreach $playlists as $playlist}
+                <li {if $_GET["album"] == $playlist->getId()}class="used"{/if} id="pl{$playlist->getId()}">
+                    <a href="/videos{$user->getId()}?album={$playlist->getId()}" id="playlistSwitch" data-id="{$playlist->getId()}">{$playlist->getName()}</a>
+                </li>
+                {/foreach}
+
+                {if $playlists_count > 10}
+                    <a id="showMoreAlbums" data-page="2">{_show_more_albums}</a>
+                {/if}
+            </ul>
+
+            <div class="buttonszv">
+                <input type="button" class="button widebutton" id="createVideoAlbum" value="{_new_album}">
+                <input n:if="!is_null($playlister) && !$playlister->isCreatedBySystem()" type="button" class="button widebutton" id="editVideoAlbum" data-name="{$playlister->getName()}" data-id="{$playlister->getId()}" value="{_edit_album}">
+            </div>
+        </div>
+    </div>
+{/block}

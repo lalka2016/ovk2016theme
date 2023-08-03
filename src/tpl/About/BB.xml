@@ -1,0 +1,10 @@
+{extends "../@layout.xml"}
+{block title}Ваш браузер устарел{/block}
+
+{block header}
+    Устаревший браузер
+{/block}
+
+{block content}
+    :(
+{/block}

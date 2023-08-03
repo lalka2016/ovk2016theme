@@ -1,0 +1,45 @@
+{extends "../@layout.xml"}
+{block title}{_change_video}{/block}
+
+{block header}
+    <a href="{$thisUser->getURL()}">{$thisUser->getCanonicalName()}</a>
+    »
+    <a href="/videos{$thisUser->getId()}">{_videos}</a>
+    »
+    <a href="/video{$video->getPrettyId()}">{_video}</a>
+    »
+    {_change_video}
+{/block}
+
+{block content}
+<div class="container_gray">
+    <form method="post" enctype="multipart/form-data">
+      <table cellspacing="7" cellpadding="0" width="50%" border="0" align="center">
+        <tbody>
+          <tr>
+            <td width="100%" valign="top"><span class="subH4">{_info_name}</span></td>
+          </tr>
+          <tr>
+            <td>
+                <input type="text" value="{$video->getName()}" name="name" />
+            </td>
+          </tr>
+          <tr>
+            <td><span class="subH4">{_description}</span></td>
+          </tr>
+          <tr>
+            <td>
+                <textarea name="desc" style="resize: vertical;">{$video->getDescription()}</textarea>
+            </td>
+          </tr>
+          <tr>
+            <td>
+                <input type="hidden" name="hash" value="{$csrfToken}" />
+                <input type="submit" class="button" name="submit" value="{_save}" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+</div>
+{/block}
