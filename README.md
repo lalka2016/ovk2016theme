@@ -1,2 +1,2 @@
 # ovk2016theme
-Ovk theme stylised for VK 2016 redesign
+Тема для OpenVK, пародирующая редизайн ВК 2016 года. Имеет AJAX-роутинг. На данный момент очень сырая
