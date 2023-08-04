@@ -1,4 +1,6 @@
-$(document).on("click", "#openerActs", (e) => {
+// Просьба не читать этот код
+// Поберегите свою психику
+$(document).on("click", ".accountBu", (e) => {
     document.querySelector(".accountActions").classList.toggle("showed")
 })
 
@@ -61,13 +63,7 @@ function moveToPage(link, writeHistory = true) {
 
         scrollTo(0, 0)
 
-        if(document.querySelector(".tabs") != null) {
-            document.querySelector(".page_content").style.width = "543px"
-
-            if(document.querySelector(".container_gray") != null) {
-                document.querySelector(".container_gray").style.width = "543px"
-            }
-        }
+        initPage()
     }
     
     xhr.onerror = () => {
@@ -95,8 +91,10 @@ $(document).on("click", "a", function(e) {
 $(document).on("click", ".showFullInformation", function(e) {
     if(document.querySelector(".hiderr").style.display == "block") {
         document.querySelector(".hiderr").style.display = "none"
+        e.currentTarget.innerHTML = theme_tr("show_information")
     } else {
         document.querySelector(".hiderr").style.display = "block"
+        e.currentTarget.innerHTML = theme_tr("hide_information")
     }
 })
 
@@ -130,14 +128,133 @@ $(document).on("click", ".post-like-button", function(e) {
     return false;
 });
 
-if(document.querySelector(".tabs") != null) {
-    document.querySelector(".page_content").style.width = "543px"
-
-    if(document.querySelector(".container_gray") != null) {
-        document.querySelector(".container_gray").style.width = "543px"
-    }
-}
-
 $(document).on("click", ".tab", (e) => {
     e.currentTarget.querySelector("a").click()
 })
+
+function setStatusEditorShown(shown) {
+    if(document.getElementById("status_editor") == null) {
+        console.log("dolb")
+        return true;
+    }
+
+    document.getElementById("status_editor").style.display = shown ? "block" : "none";
+    if(!document.status_popup_form.submit.style.width)
+        document.status_popup_form.submit.style.width = document.status_popup_form.submit.offsetWidth + 4 + "px"
+}
+
+function removeMenus() {
+    for(const el of document.querySelectorAll(".openingMenu")) {
+        el.classList.remove("showed")
+    }
+}
+
+$(document).on("click", event => {
+    if(!event.target.closest("#status_editor") && !event.target.closest("#page_status_text"))
+        setStatusEditorShown(false);
+    console.log(event.target.parentNode.id != "openerActs")
+    if(event.target.parentNode.id != "openerActs") {
+        removeMenus()
+    }
+});
+
+function initPage() {
+    if(document.getElementById("page_status_text") != null) {
+        document.getElementById("page_status_text").onclick = setStatusEditorShown.bind(this, true);
+    }
+
+    if(document.querySelector(".tabs") != null) {
+        document.querySelector(".page_content").style.width = "543px"
+    
+        if(document.querySelector(".container_gray") != null) {
+            document.querySelector(".container_gray").style.width = "543px"
+        }
+    }
+
+    if(document.querySelector(".showFullInformation") != null) {
+        document.querySelector(".showFullInformation").innerHTML = theme_tr("show_information")
+    }
+}
+
+async function changeStatus() {
+    const status = document.status_popup_form.status.value;
+
+    document.status_popup_form.submit.innerHTML = "<div class=\"button-loading\"></div>";
+    document.status_popup_form.submit.disabled = true;
+
+    const formData = new FormData();
+    formData.append("status", status);
+    formData.append("hash", document.status_popup_form.hash.value);
+    const response = await ky.post("/edit?act=status", {body: formData});
+
+    if(!parseAjaxResponse(await response.text())) {
+        document.status_popup_form.submit.innerHTML = tr("send");
+        document.status_popup_form.submit.disabled = false;
+        return;
+    }
+
+    if(document.status_popup_form.status.value === "") {
+        document.querySelector("#page_status_text").innerHTML = `[ ${tr("change_status")} ]`;
+        document.querySelector("#page_status_text").className = "edit_link page_status_edit_button";
+    } else {
+        document.querySelector("#page_status_text").innerHTML = status;
+        document.querySelector("#page_status_text").className = "page_status page_status_edit_button";
+    }
+
+    setStatusEditorShown(false);
+    document.status_popup_form.submit.innerHTML = tr("send");
+    document.status_popup_form.submit.disabled = false;
+}
+
+$(document).on("click", ".minialbum", (e) => {
+    moveToPage(e.currentTarget.dataset.href)
+})
+
+$(document).on("click", ".profile_link", (e) => {
+    e.currentTarget.querySelector("a").click()
+})
+
+$(document).on("click", "#profile_link", (e) => {
+    e.currentTarget.querySelector("a").click()
+})
+
+function theme_tr(string, ...args) {
+    let output = window.theme_lang[string];
+    if(args.length > 0) {
+        if(typeof args[0] === "number") {
+            const cardinal = args[0];
+            let numberedString;
+
+            switch(cardinal) {
+                case 0: 
+                    numberedString = string + "_zero";
+                    break;
+                case 1: 
+                    numberedString = string + "_one";
+                    break;
+                default:
+                    numberedString = string + (cardinal < 5 ? "_few" : "_other");
+            }
+
+            let newOutput = window.lang[numberedString];
+            if(newOutput == null)
+                newOutput = window.lang[string + "_other"];
+
+            if(newOutput == null)
+                newOutput = output;
+
+            output = newOutput;
+        }
+    }
+
+    if(output == null)
+        return "@" + string;
+
+    for(const [ i, element ] of Object.entries(args))
+        output = output.replace(RegExp("(\\$" + (Number(i) + 1) + ")"), element);
+
+    return output;
+}
+
+
+initPage()

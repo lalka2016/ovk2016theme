@@ -104,7 +104,7 @@
     {var $avatarPhoto = $club->getAvatarPhoto()}
     {var $avatarLink = ((is_null($avatarPhoto) ? FALSE : $avatarPhoto->isAnonymous()) ? "/photo" . ("s/" . base_convert((string) $avatarPhoto->getId(), 10, 32)) : $club->getAvatarLink())}
     <div class="avatar_block" style="position:relative;">
-        {var $hasAvatar = !str_contains($club->getAvatarUrl('miniscule'), "/assets/packages/static/openvk/img/club_200.png")}
+        {var $hasAvatar = !is_null($avatarPhoto)}
         {if !is_null($thisUser) && $hasAvatar == false && $club->canBeModifiedBy($thisUser)}
             <a href="javascript:addAvatarImage(true, {$club->getId()})" class="text_add_image">{_add_image_group}</a>
         {elseif !is_null($thisUser) && $hasAvatar == true && $club->canBeModifiedBy($thisUser)}

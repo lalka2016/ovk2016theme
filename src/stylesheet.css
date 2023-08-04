@@ -681,3 +681,109 @@ span {
 .container_gray {
     width: 88%;
 }
+
+.page_status {
+    font-size: 12px;
+}
+
+.label {
+    width: 137px !important;
+}
+
+.data {
+    width: 209px !important;
+    font-size: 12px !important;
+}
+
+#status_editor {
+    border-radius: 3px;
+}
+
+.page_status_popup {
+    border: unset;
+    background-color: #fff;
+}
+
+a {
+    font-size: 12px;
+}
+
+.minialbum {
+    position: relative;
+    background: gray;
+    overflow-x: hidden;
+    border-radius: 2px;
+    overflow-y: hidden;
+    margin-left: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.minialbum img {
+    max-width: 200px;
+}
+
+.album_info {
+    position:absolute;
+    overflow: hidden; 
+    overflow-wrap: break-word;
+    bottom:0;
+    width: 100%;
+    padding-left: 7px;
+    padding-bottom: 5px;
+    text-shadow: 0px 1px 2px rgba(0,0,0,0.7);
+}
+
+.album_info span {
+    color: white;
+}
+
+.album_info .nameh {
+    font-weight: bold;
+}
+
+.album_info .size {
+    float:right;
+    margin-right: 15px;
+}
+
+.vid_size {
+    background: rgba(73, 73, 73, 0.7);
+    padding: 4px;
+    border-radius: 2px;
+    position: absolute;
+    bottom: 0;
+    color:white;
+    right: 0;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.profile_link, #profile_link {
+    background: #5E81A8;
+    width: fit-content !important;
+    height: 28px;
+    border-radius: 2px;
+    color: white;
+    text-align: center;
+    padding-top: 7px;
+    border-bottom: unset;
+    margin-bottom: 5px;
+    width: 100% !important;
+    font-size: 12px;
+}
+
+.profile_link a, #profile_link a {
+    color: white;
+}
+
+#profile_link:hover,
+.profile_link:hover {
+    background: #5E81A8;
+}
+
+#profile_link:active,
+.profile_link:active {
+    background: #4f6c8d;
+    padding-top: 8px;
+}

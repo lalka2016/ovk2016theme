@@ -12,6 +12,7 @@
         <meta n:ifset="$csrfToken" name="csrf" value="{$csrfToken}" />
 
         <script src="/language/{php echo getLanguage()}.js" crossorigin="anonymous"></script>
+        <script src="/themepack/vk2016/0.0.1.0/resource/{php echo getLanguage()}.js?rnd={rand(0, 9999)}" crossorigin="anonymous"></script>
         {script "js/node_modules/jquery/dist/jquery.min.js"}
         {script "js/node_modules/jquery-ui/dist/jquery-ui.min.js"}
         {script "js/node_modules/umbrellajs/umbrella.min.js"}
@@ -175,7 +176,7 @@
                                 <span><a href="/blog">{_footer_blog}</a></span>
                                 <span><a href="/dev">{_footer_developers}</a></span>
                                 <span><a href="/about">{_footer_about_instance}</a></span>
-                                <span><a id="learnMore">{_learn_more}</a></span>
+                                <span id="openerActs"><a id="learnMore">{_learn_more}</a></span>
                                 <div id="learnMoreMenu" class="openingMenu" style="width: 190px">
                                     <img src="/themepack/vk2016/0.0.1.0/resource/2.png" class="arrw" style="margin-top: -6px;">
                                     <ul>

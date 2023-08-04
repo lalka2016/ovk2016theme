@@ -33,13 +33,6 @@
 {/block}
 
 {block content}
-    {if !is_null($thisUser) && $thisUser->getId() != $user->getId() && $user->getProfileType() == 1 && $thisUser->getChandlerUser()->can("access")->model("admin")->whichBelongsTo(NULL)}
-        <div class="msg msg_err" style="width:96%;">
-            <b>{_private_profile_warning}</b>
-            <br>
-            {_private_profile_warning_desc}
-        </div>
-    {/if}
 
     {if !$user->isBanned()}
     
@@ -75,7 +68,7 @@
             </div>
             <div n:ifset="$thisUser" id="profile_links">
                 {if $user->getId() == $thisUser->getId()}
-                    <div id="profile_link" style="width: 194px;">
+                    <div id="profile_link" style="width: 178px !important;">
                         <a href="/edit" class="link">{_edit_page}</a>
                     </div>
                     <div n:if="OPENVK_ROOT_CONF['openvk']['preferences']['commerce'] && !$thisUser->prefersNotToSeeRating()" id="profile_link" style="width: 194px;">
@@ -144,11 +137,10 @@
                         </form>
                     {/if}
                 {/if}
-                <a style="width: 194px;" n:if="$user->getFollowersCount() > 0" href="/friends{$user->getId()}?act=incoming" class="profile_link">{tr("followers", $user->getFollowersCount())}</a>
             </div>
         </div>
 
-        <div class="info_containerw" n:if="isset($thisUser) && !$thisUser->prefersNotToSeeRating()">
+        <div class="info_containerw" style="margin-top: -6px;" n:if="isset($thisUser) && !$thisUser->prefersNotToSeeRating()">
             <div class="profile-hints">
                 {var $completeness = $user->getProfileCompletenessReport()}
                 
@@ -236,60 +228,46 @@
                 </div>
             </div>
         </div>
-        <div class="info_containerw" n:if="$albumsCount > 0 && $user->getPrivacyPermission('photos.read', $thisUser ?? NULL)">
+        <div class="info_containerw pretty" n:if="$albumsCount > 0 && $user->getPrivacyPermission('photos.read', $thisUser ?? NULL)" style="margin-top: -6px;">
             <div>
-                <div class="content_title_expanded">
-                    {_albums}
+                <div class="content_title_expanded" style="margin-left: 3px;">
+                    <a style="color:unset;font-weight: lighter;" href="/albums{$user->getId()}">{_albums} <span style="color:gray">{$albumsCount}</span></a>
                 </div>
                 <div>
-                    <div class="content_subtitle">
-                        {tr("albums", $albumsCount)}
-                        <div style="float:right;">
-                            <a href="/albums{$user->getId()}">{_all_title}</a>
-                        </div>
-                    </div>
                     <div style="padding: 5px;">
-                        <div class="ovk-album" style="display: inline-block;" n:foreach="$albums as $album">
-                            <div style="text-align: center;float: left;height: 54pt;width: 100px;">
+                        <div class="minialbum" data-href="/album{$album->getPrettyId()}" style="display: inline-block;" n:foreach="array_slice(iterator_to_array($albums), 2) as $album">
+                            <div style="text-align: center;float: left;height: 81pt;width: 179px;">
                                 {var $cover = $album->getCoverPhoto()}
                                 
                                 <img
                                     src="{is_null($cover)?'/assets/packages/static/openvk/img/camera_200.png':$cover->getURLBySizeId('small')}"
-                                    style="max-width: 80px; max-height: 54pt;" />
+                                    />
                             </div>
-                            <div style="overflow: hidden; overflow-wrap: break-word;">
-                                <b><a href="/album{$album->getPrettyId()}">{$album->getName()}</a></b><br>
-                                <span class="nobold">{tr("updated_at", $album->getEditTime() ?? $album->getPublicationTime())}</span>
+                            <div class="album_info">
+                                <span class="nameh">{ovk_proc_strtr($album->getName(), 23)}</span>
+                                <span class="size">{$album->size()}</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="info_containerw" n:if="$videosCount > 0 && $user->getPrivacyPermission('videos.read', $thisUser ?? NULL)">
+        <div class="info_containerw pretty" style="margin-top: -6px;" n:if="$videosCount > 0 && $user->getPrivacyPermission('videos.read', $thisUser ?? NULL)">
             <div>
-                <div class="content_title_expanded">
-                    {_videos}
+                <div class="content_title_expanded" style="margin-left: 3px;">
+                     <a style="color:unset;font-weight: lighter;" href="/videos{$user->getId()}">{_videos} <span style="color:gray">{$videosCount}</span></a>
                 </div>
                 <div>
-                    <div class="content_subtitle">
-                        {tr("videos", $videosCount)}
-                        <div style="float:right;">
-                            <a href="/videos{$user->getId()}">{_all_title}</a>
-                        </div>
-                    </div>
-                    <div style="padding: 5px;">
-                        <div class="ovk-video" n:foreach="$videos as $video">
-                            <a href="/video{$video->getPrettyId()}" class="preview" align="center" id="videoOpen" data-id="{$video->getId()}">
+                    <div style="padding: 5px;" n:foreach="$videos as $video">
+                        <div class="minialbum" data-href="/video{$video->getPrettyId()}" style="display: inline-block;">
+                            <div style="text-align: center;float: left;height: 81pt;width: 179px;">  
                                 <img
                                     src="{$video->getThumbnailURL()}"
-                                    style="max-width: 170px; max-height: 127px; margin: auto;" />
-                            </a>
-                            <div>
-                                <b><a href="/video{$video->getPrettyId()}" id="videoOpen" data-id="{$video->getId()}">{ovk_proc_strtr($video->getName(), 30)}</a></b><br>
-                                <span style="font-size: 10px;">{$video->getPublicationTime()} | {_comments} ({$video->getCommentsCount()})</span>
+                                    />
+                                <span class="vid_size">00:00</span>
                             </div>
                         </div>
+                        <a href="/video{$video->getPrettyId()}" style="margin-left: 5px;">{ovk_proc_strtr($video->getName(), 23)}</a>
                     </div>
                 </div>
             </div>
@@ -417,8 +395,8 @@
                         {/if}
                     </div>
                 </div>
-                <div>
-                    <table id="basicInfo" class="ugc-table" border="0" cellspacing="0" cellpadding="0" border="0" cellspacing="0" cellpadding="0" n:if=" $user->getPrivacyPermission('page.info.read', $thisUser ?? NULL)">
+                <div style="margin-top: 5px;">
+                    <table id="basicInfo" style="border-spacing: 0px 2px;" class="ugc-table" border="0" cellspacing="0" cellpadding="0" border="0" cellspacing="0" cellpadding="0" n:if=" $user->getPrivacyPermission('page.info.read', $thisUser ?? NULL)">
                         <tbody>
                             <tr>
                                 <td class="label"><span class="nobold">{_gender}: </span></td>
@@ -581,6 +559,9 @@
                 </div>
                 </div>
             </div>
+            <div class="profile_stats">
+                
+            </div>
         </div>
         <div n:if="OPENVK_ROOT_CONF['openvk']['preferences']['commerce'] && ($giftCount = $user->getGiftCount()) > 0" class="info_containerw">
             <div class="content_title_expanded">
@@ -710,48 +691,6 @@
         </script>
 
         <script n:if="isset($thisUser) && $user->getId() == $thisUser->getId()" n:syntax="off">
-            function setStatusEditorShown(shown) {
-                document.getElementById("status_editor").style.display = shown ? "block" : "none";
-                if(!document.status_popup_form.submit.style.width)
-                    document.status_popup_form.submit.style.width = document.status_popup_form.submit.offsetWidth + 4 + "px"
-            }
-
-            document.addEventListener("click", event => {
-                if(!event.target.closest("#status_editor") && !event.target.closest("#page_status_text"))
-                    setStatusEditorShown(false);
-            });
-
-            document.getElementById("page_status_text").onclick = setStatusEditorShown.bind(this, true);
-
-            async function changeStatus() {
-                const status = document.status_popup_form.status.value;
-
-                document.status_popup_form.submit.innerHTML = "<div class=\"button-loading\"></div>";
-                document.status_popup_form.submit.disabled = true;
-
-                const formData = new FormData();
-                formData.append("status", status);
-                formData.append("hash", document.status_popup_form.hash.value);
-                const response = await ky.post("/edit?act=status", {body: formData});
-
-                if(!parseAjaxResponse(await response.text())) {
-                    document.status_popup_form.submit.innerHTML = tr("send");
-                    document.status_popup_form.submit.disabled = false;
-                    return;
-                }
-
-                if(document.status_popup_form.status.value === "") {
-                    document.querySelector("#page_status_text").innerHTML = `[ ${tr("change_status")} ]`;
-                    document.querySelector("#page_status_text").className = "edit_link page_status_edit_button";
-                } else {
-                    document.querySelector("#page_status_text").innerHTML = status;
-                    document.querySelector("#page_status_text").className = "page_status page_status_edit_button";
-                }
-
-                setStatusEditorShown(false);
-                document.status_popup_form.submit.innerHTML = tr("send");
-                document.status_popup_form.submit.disabled = false;
-            }
         </script>
     </div>
     
