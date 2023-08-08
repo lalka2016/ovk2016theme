@@ -269,6 +269,12 @@ html {
     padding-right: 3px;
     color: rgb(147, 150, 153);
     line-height: 19px;
+    font-size: 11px;
+}
+
+.maybeFooter {
+    border-top: 1px #d2c6c6 solid;
+    padding-top: 7px;
 }
 
 .hrr {
@@ -786,4 +792,44 @@ a {
 .profile_link:active {
     background: #4f6c8d;
     padding-top: 8px;
+}
+
+.profile_stats {
+    border-top: 1px gray solid;
+    border-top-color: rgb(231, 232, 236);
+    margin-left: -10px;
+    margin-top: 8px;
+    width: 105.3%;
+    display: flex;
+    text-align: center;
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 7px;
+}
+
+.profile_stats .stat {
+    display: flex;
+    margin-right: 10px;
+    flex-direction: column;
+}
+
+.profile_stats .stat .cnts {
+    font-size: 19px;
+    color: rgb(66, 100, 139);
+    padding-bottom: 3px;
+    line-height: 21px;
+}
+
+.profile_stats .stat .cnts a {
+    font-size: 19px;
+}
+
+.profile_stats .stat .subtext {
+    color: rgb(130, 130, 130);
+    line-height: 15px;
+}
+
+.clubName {
+    font-size: 17px;
+    margin-left: 3px;
 }

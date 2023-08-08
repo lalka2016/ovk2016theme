@@ -174,6 +174,22 @@ function initPage() {
     if(document.querySelector(".showFullInformation") != null) {
         document.querySelector(".showFullInformation").innerHTML = theme_tr("show_information")
     }
+
+    if(document.getElementById("posts_txt") != null) {
+        document.getElementById("posts_txt").innerHTML = theme_tr("posts_many")
+    }
+
+    if(document.getElementById("friends_txt") != null) {
+        document.getElementById("friends_txt").innerHTML = theme_tr("friends_many")
+    }
+
+    if(document.getElementById("followers_txt") != null) {
+        document.getElementById("followers_txt").innerHTML = theme_tr("followers_many")
+    }
+
+    if(document.getElementById("videos_txt") != null) {
+        document.getElementById("videos_txt").innerHTML = theme_tr("videos_many")
+    }
 }
 
 async function changeStatus() {

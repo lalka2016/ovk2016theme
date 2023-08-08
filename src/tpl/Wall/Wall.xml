@@ -1,7 +1,7 @@
 {extends "../@layout.xml"}
 
 {block headIncludes}
-    {if $oObj->isDeleted() || $oObj->isClosed() || $oObj instanceof openvk\Web\Models\Entities\Club && $oObj->isHideFromGlobalFeedEnabled()}
+    {if $oObj->isDeleted() || method_exists($oObj, "isClosed") && $oObj->isClosed() || $oObj instanceof openvk\Web\Models\Entities\Club && $oObj->isHideFromGlobalFeedEnabled()}
         <meta name="robots" content="noindex, noarchive">
     {/if}
 {/block}

@@ -1,10 +1,7 @@
 {extends "../@layout.xml"}
-{var $backdrops = !$club->isDeleted() ? $club->getBackDropPictureURLs() : NULL}
 
 {block headIncludes}
-    {if $club->isDeleted()}
-        <meta name="robots" content="noindex, noarchive">
-    {/if}
+
 {/block}
 
 {block title}{$club->getName()}{/block} 
@@ -20,31 +17,24 @@
 {/block}
 
 {block content}
-{if !$club->isDeleted()}
+{if true}
 <div class="left_big_block">
     <div n:if="!is_null($alert = $club->getAlert())" class="group-alert">{strpos($alert, "@") === 0 ? tr(substr($alert, 1)) : $alert}</div>
 
-    <div class="content_title_expanded" onclick="hidePanel(this);">
-        {_information}
-    </div>
-    
-    <div class="page_info">
+    <div class="info_containerw">
+        <span class="clubName">{$club->getName()}</span>
         <table class="ugc-table">
             <tbody>
                 <tr>
-                    <td><span class="nobold">{_name_group}:</span></td>
-                    <td><b>{$club->getName()}</b></td>    
-                </tr>
-                <tr>
                     <td><span class="nobold">{_description}:</span></td>
-                    <td>{$club->getDescriptionHtml()|noescape}</td>
+                    <td><span>{$club->getDescriptionHtml()|noescape}</span></td>
                 </tr>
                 <tr n:if="!is_null($club->getWebsite())">
                     <td><span class="nobold">{_website}: </span></td>
                     <td>
-                        <a href="{$club->getWebsite()}" rel="ugc" target="_blank">
+                        <span><a href="{$club->getWebsite()}" rel="ugc" target="_blank">
                             {$club->getWebsite()}
-                        </a>
+                        </a></span>
                     </td>
                 </tr>
             </tbody>
@@ -103,7 +93,7 @@
 <div class="right_small_block">
     {var $avatarPhoto = $club->getAvatarPhoto()}
     {var $avatarLink = ((is_null($avatarPhoto) ? FALSE : $avatarPhoto->isAnonymous()) ? "/photo" . ("s/" . base_convert((string) $avatarPhoto->getId(), 10, 32)) : $club->getAvatarLink())}
-    <div class="avatar_block" style="position:relative;">
+    <div class="avatar_block info_containerw" style="position:relative;">
         {var $hasAvatar = !is_null($avatarPhoto)}
         {if !is_null($thisUser) && $hasAvatar == false && $club->canBeModifiedBy($thisUser)}
             <a href="javascript:addAvatarImage(true, {$club->getId()})" class="text_add_image">{_add_image_group}</a>
@@ -129,44 +119,6 @@
             <a href="/club{$club->getId()}/edit" id="profile_link">{_edit_group}</a>
             <a href="/club{$club->getId()}/stats" id="profile_link">{_statistics}</a>
         {/if}
-
-        {if $thisUser->getChandlerUser()->can("access")->model("admin")->whichBelongsTo(NULL)}
-            <script>
-                function banClub() {
-                    let name = {$club->getName()}
-                    let body = tr("ban_group_desc", {$club->getName()})
-                    let cool = tr("come_up_with_something_cool")
-                    let num  = {$club->getId()}
-                    body += `
-                        <br>
-                        <input type="text" id="block_reason" name="block_reason" placeholder="` + cool + `">
-                        <input type="checkbox" value="1" id="delete_every_post" name="delete_every_post">` + tr('delete_every_post') +
-                        `<br><input type="checkbox" value="1" id="unsub_everyone" name="unsub_everyone">` + tr('unsubscribe_everyoune')
-                    
-
-                    MessageBox({_ban_group} + " " + {$club->getName()}, body, [{_ok}, {_cancel}], [
-                        (function() {
-                            let xhr = new XMLHttpRequest()
-                            xhr.open("POST", "/admin/clubs/id" + num + "/ban" + "?hash=" + {rawurlencode($csrfToken)}, true);
-                            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                            xhr.onload = () => {
-                            if(xhr.responseText.indexOf("success") === -1)
-                                MessageBox(tr("error"), tr("cant_ban_group"), ["OK"], [Function.noop]);
-                            else
-                                location.reload()
-                            }
-                            xhr.send("block_reason="+block_reason.value+"&delete_every_post="+delete_every_post.checked+"&unsub_everyone="+unsub_everyone.checked);
-                        }),
-                        Function.noop
-                    ]);
-
-                    document.querySelector(".ovk-diag-body").style.padding = "10px"
-                }
-            </script>
-            <a href="/id{$club->getOwner()->getId()}" id="profile_link">{_go_to_owner}</a>
-            <a href="/admin/clubs/id{$club->getId()}" id="profile_link">{_manage_group_action}</a>
-            <a href="javascript:banClub()" id="profile_link">{_ban_group}</a>
-        {/if}
         {if $club->getSubscriptionStatus($thisUser) == false}
             <form action="/setSub/club" method="post">
                 <input type="hidden" name="act" value="add" />
@@ -182,14 +134,6 @@
                 <input type="submit" id="profile_link" value="{_leave_community}" />
             </form>
         {/if}
-    </div>
-    <div>
-        <div class="content_title_expanded" onclick="hidePanel(this);">
-            {_group_type}
-        </div>
-        <div style="padding:4px">
-            {_group_type_open}
-        </div>
     </div>
     <div n:if="$club->getAdministratorsListDisplay() == 0">
         <div class="content_title_expanded" onclick="hidePanel(this);">
